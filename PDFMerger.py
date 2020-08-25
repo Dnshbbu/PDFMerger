@@ -78,7 +78,7 @@ class Ui_PDFMerger(object):
     def retranslateUi(self, PDFMerger):
         _translate = QtCore.QCoreApplication.translate
         PDFMerger.setWindowTitle(_translate("PDFMerger", "PDF Merger"))
-        PDFMerger.setWindowIcon(QIcon('pdf.png')) 
+        PDFMerger.setWindowIcon(QIcon('images/pdf.png')) 
         self.btnAdd.setText(_translate("PDFMerger", "Add Files"))
         self.btnMoveUp.setText(_translate("PDFMerger", "Move Up"))
         self.btnMoveDown.setText(_translate("PDFMerger", "Move Down"))
@@ -165,7 +165,7 @@ class Ui_PDFMerger(object):
         msg = QMessageBox()
         msg.setIcon(QMessageBox.Warning)
         msg.setWindowTitle("Warning")
-        msg.setWindowIcon(QIcon('warning.png')) 
+        msg.setWindowIcon(QIcon('images/warning.png')) 
         msg.setText(displaytext)        
         msg.setStandardButtons(QMessageBox.Ok)
         # msg.buttonClicked.connect(msgbtn)            
