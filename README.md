@@ -8,6 +8,7 @@ This is a simple application to merge the PDF files
 * Run `python PDFMerger.py`
 
 # Screenshot of the App:
+![Image](https://github.com/Dnshbbu/PDFMerger/blob/master/sample/PDFMerger.png?raw=true)
 
 
 
