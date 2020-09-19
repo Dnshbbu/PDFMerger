@@ -1,8 +1,8 @@
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QFileDialog, QMessageBox
-from PyPDF2 import PdfFileMerger
 
+import pdfmerge
 
 class Ui_PDFMerger(object):
     def setupUi(self, PDFMerger):
@@ -55,14 +55,18 @@ class Ui_PDFMerger(object):
         self.statusbar.setObjectName("statusbar")
         PDFMerger.setStatusBar(self.statusbar)
         
+        _translate = QtCore.QCoreApplication.translate
+        
         self.label = QtWidgets.QLabel(self.centralwidget)
         self.label.setGeometry(QtCore.QRect(170, 340, 131, 20))
         self.label.setObjectName("label")
+                
         self.label_2 = QtWidgets.QLabel(self.centralwidget)
         self.label_2.setGeometry(QtCore.QRect(20, 10, 301, 20))
         self.label_2.setObjectName("label_2")
+        
 
-        self.retranslateUi(PDFMerger)
+        self.retranslateUi(PDFMerger, _translate)
         QtCore.QMetaObject.connectSlotsByName(PDFMerger)
         
    
@@ -71,12 +75,10 @@ class Ui_PDFMerger(object):
         self.btnMoveDown.clicked.connect(lambda: self.moveDownButtonClicked())
         self.btnDelete.clicked.connect(lambda: self.deleteButtonClicked())
         self.btnOutDir.clicked.connect(lambda: self.outDirButtonClicked())
-        self.btnMerge.clicked.connect(lambda: self.mergeButtonClicked())
+        self.btnMerge.clicked.connect(lambda: self.mergeButtonClicked())    
         
 
-
-    def retranslateUi(self, PDFMerger):
-        _translate = QtCore.QCoreApplication.translate
+    def retranslateUi(self, PDFMerger,_translate):      
         PDFMerger.setWindowTitle(_translate("PDFMerger", "PDF Merger"))
         PDFMerger.setWindowIcon(QIcon('images/pdf.png')) 
         self.btnAdd.setText(_translate("PDFMerger", "Add Files"))
@@ -130,34 +132,32 @@ class Ui_PDFMerger(object):
     def deleteButtonClicked(self): 
         self.currentRow = self.listWidget.currentRow()
         self.listWidget.takeItem(self.currentRow)
-
+        
     def outDirButtonClicked(self):
         self.outputfolder = QFileDialog.getExistingDirectory()
         _translate = QtCore.QCoreApplication.translate
         self.lineEdit.setText(_translate("PDFMerger", self.outputfolder))     
-
+    
     def mergeButtonClicked(self):
         _translate = QtCore.QCoreApplication.translate
         if self.lineEdit.text() == "":   
             self.showdialog("Select the output directory") 
-
         else:
             if self.outputFile.text() == "":
                 self.showdialog("Enter the output filename") 
             else:
                 try:
+                    
                     if len(self.listWidget) == 0:
-                        self.showdialog("Add the pdfs to merge") 
-                    merger = PdfFileMerger()
-                    readedFileList = [self.listWidget.item(i).text() for i in range(self.listWidget.count())]
-                    for pdf in readedFileList:      
-                        merger.append(pdf)
-                    mergedfile = str(self.outputfolder)+"/"+str(self.outputFile.text())+".pdf"
-                    merger.write(mergedfile)
-                    #TODO: Ask for overwrite if file already exists
-                    merger.close()
+                        self.showdialog("Add the pdfs to merge")  
+                    self.label.setText(_translate("PDFMerger", "Merging.. Please wait.."))
+                    self.label.setStyleSheet("color: red")    
+                    self.label.repaint()
+                    readFileList = [self.listWidget.item(i).text() for i in range(self.listWidget.count())]             
+                    pdfmerge.merge(self,readFileList,_translate)
                     self.label.setText(_translate("PDFMerger", "Merged successfully!"))
                     self.label.setStyleSheet("color: green") 
+                    self.label.repaint()
                 except Exception as e:
                     print(e)
      
@@ -172,6 +172,7 @@ class Ui_PDFMerger(object):
         retval = msg.exec_()
         # print "value of pressed message box button:", retval   
 
+#self.close() // to close the application
 
 if __name__ == "__main__":
     import sys
